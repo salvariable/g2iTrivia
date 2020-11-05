@@ -1,6 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Home from './screens/Home';
+import Quiz from './screens/Quiz';
 
 export default function App() {
 
@@ -19,13 +23,16 @@ export default function App() {
 
   }, [])
 
+  const Stack = createStackNavigator();
+
   return (
-    <View style={styles.container}>
-      <Text>
-        {trivia.length ? trivia.map((element) => element.question) : "Open up App.tsx to start working on your app!"}
-      </Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="HomeScreen" component={Home} />
+        <Stack.Screen name="QuizScreen" component={Quiz} />
+
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
