@@ -87,8 +87,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   resultsContainer: {
-    marginTop: 24,
-    marginBottom: 24,
+    padding: 16,
   },
   element: {
     flex: 1,
