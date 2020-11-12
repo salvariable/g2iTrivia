@@ -33,12 +33,22 @@ const QuestionLayout: React.FC<Props> = ({
         <BooleanButton
           option={false}
           onPress={() =>
-            saveAnswer(question, correct_answer, "False")
+            saveAnswer({
+              question,
+              correct: correct_answer,
+              answer: "False",
+            })
           }
         />
         <BooleanButton
           option={true}
-          onPress={() => saveAnswer(question, correct_answer, "True")}
+          onPress={() =>
+            saveAnswer({
+              question,
+              correct: correct_answer,
+              answer: "True",
+            })
+          }
         />
       </View>
     </View>

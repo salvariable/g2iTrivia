@@ -6,7 +6,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import QuestionLayout from "../components/QuestionLayout";
-import { QuestionObject } from "../types/objects";
+import { QuestionObject, UserAnswer } from "../types/objects";
 import { useCurrentAnswers } from "../api/ContextProvider";
 
 export interface Props {
@@ -14,7 +14,7 @@ export interface Props {
 }
 
 const Quiz: React.FC<Props> = ({ navigation }) => {
-  const [trivia, setTrivia] = useState<Array<object>>([]);
+  const [trivia, setTrivia] = useState<Array<QuestionObject>>([]);
 
   const { userAnswers, saveAnswer } = useCurrentAnswers();
 
@@ -41,15 +41,15 @@ const Quiz: React.FC<Props> = ({ navigation }) => {
   };
 
   // Save user's answer with its question and correct answer, then discard element from trivia data
-  const handleQuestionAnswer = (
-    question: string,
-    correct: string,
-    answer: string
-  ) => {
+  const handleQuestionAnswer = ({
+    question,
+    correct,
+    answer,
+  }: UserAnswer) => {
     saveAnswer(question, correct, answer);
     setTrivia(
       trivia.filter(
-        (element: object) => question !== element.question
+        (element: QuestionObject) => question !== element.question
       )
     );
 

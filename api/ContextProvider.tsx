@@ -1,13 +1,20 @@
 import React, { createContext, useContext, useState } from "react";
+import { AppContext, UserAnswer } from "../types/objects";
 
 interface Props {
   children: any;
 }
 
-const AnswersContext = createContext();
+const AnswersContext = createContext<AppContext>({
+  userAnswers: [],
+  saveAnswer: () => {},
+  resetAnswers: () => {},
+});
 
 export const QuestionsProvider: React.FC<Props> = ({ children }) => {
-  const [userAnswers, setUserAnswers] = useState([]);
+  const [userAnswers, setUserAnswers] = useState<Array<UserAnswer>>(
+    []
+  );
 
   const saveAnswer = (
     question: string,

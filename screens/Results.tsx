@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { CommonActions } from "@react-navigation/native";
 import { useCurrentAnswers } from "../api/ContextProvider";
+import { UserAnswer } from "../types/objects";
 export interface Props {
   navigation: any;
 }
@@ -18,14 +19,14 @@ const Results: React.FC<Props> = ({ navigation }) => {
   const { userAnswers, resetAnswers } = useCurrentAnswers();
 
   const correctAnswers = userAnswers.filter(
-    (value: any) => value.correct === value.answer
+    (value: UserAnswer) => value.correct === value.answer
   );
 
-  const renderAnswer = (
-    question: string,
-    correct: string,
-    answer: string
-  ) => {
+  const renderAnswer = ({
+    question,
+    correct,
+    answer,
+  }: UserAnswer) => {
     return (
       <View style={styles.element}>
         <View>
@@ -54,9 +55,7 @@ const Results: React.FC<Props> = ({ navigation }) => {
       </Text>
       <FlatList
         data={userAnswers}
-        renderItem={({ item }) =>
-          renderAnswer(item.question, item.correct, item.answer)
-        }
+        renderItem={({ item }) => renderAnswer(item)}
         keyExtractor={(item) => item.question}
         contentContainerStyle={styles.resultsContainer}
       />
