@@ -1,23 +1,47 @@
 import React from "react";
-import { FlatList, SafeAreaView, View, StyleSheet, Text, Image, Dimensions } from "react-native";
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 import { CommonActions } from "@react-navigation/native";
+import { useCurrentAnswers } from "../api/ContextProvider";
 
-export default ({
-  navigation,
-  route: {
-    params: { results },
-  },
-}) => {
-  const correctAnswers = results.filter((value) => value.correct === value.answer);
+export interface Props {
+  navigation: any;
+}
 
-  const renderAnswer = ({ question, correct, answer }) => {
-    const right = <Image style={styles.result} source={require("../assets/right.png")} />;
+const Results: React.FC<Props> = ({ navigation }) => {
+  const { userAnswers, resetAnswers } = useCurrentAnswers();
 
-    const wrong = <Image style={styles.result} source={require("../assets/wrong.png")} />;
+  const correctAnswers = userAnswers.filter(
+    (value: any) => value.correct === value.answer
+  );
 
+  const renderAnswer = (
+    question: string,
+    correct: string,
+    answer: string
+  ) => {
     return (
       <View style={styles.element}>
-        <View>{correct === answer ? right : wrong}</View>
+        <View>
+          {correct === answer ? (
+            <Image
+              style={styles.result}
+              source={require("../assets/right.png")}
+            />
+          ) : (
+            <Image
+              style={styles.result}
+              source={require("../assets/wrong.png")}
+            />
+          )}
+        </View>
         <Text style={{ flex: 1 }}>{question}</Text>
       </View>
     );
@@ -27,26 +51,29 @@ export default ({
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>
         You scored {"\n"} {correctAnswers.length}
-        {" /"} {results.length}
+        {" /"} {userAnswers.length}
       </Text>
       <FlatList
-        data={results}
-        renderItem={({ item }) => renderAnswer(item)}
+        data={userAnswers}
+        renderItem={({ item }) =>
+          renderAnswer(item.question, item.correct, item.answer)
+        }
         keyExtractor={(item) => item.question}
-        contentContainerStyle={{ marginTop: 24, marginBottom: 24 }}
+        contentContainerStyle={styles.resultsContainer}
       />
-      <Text
+      <TouchableOpacity
         style={styles.button}
-        onPress={() =>
+        onPress={() => {
+          resetAnswers();
           navigation.dispatch(
             CommonActions.reset({
               routes: [{ name: "Home" }],
             })
-          )
-        }
+          );
+        }}
       >
-        PLAY AGAIN?
-      </Text>
+        <Text>PLAY AGAIN?</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -61,6 +88,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
+  resultsContainer: {
+    marginTop: 24,
+    marginBottom: 24,
+  },
   element: {
     flex: 1,
     flexDirection: "row",
@@ -72,8 +103,11 @@ const styles = StyleSheet.create({
     margin: 16,
   },
   button: {
-    marginBottom: 24,
     marginTop: 16,
     alignSelf: "center",
+    position: "relative",
+    bottom: 0,
   },
 });
+
+export default Results;

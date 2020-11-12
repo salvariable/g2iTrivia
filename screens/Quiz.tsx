@@ -1,14 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, SafeAreaView, View, StyleSheet, Dimensions, Text } from "react-native";
-import BooleanButton from "../components/BooleanButton";
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+} from "react-native";
+import QuestionLayout from "../components/QuestionLayout";
+import { QuestionObject } from "../types/objects";
+import { useCurrentAnswers } from "../api/ContextProvider";
 
-const Quiz = ({ navigation }) => {
-  const [trivia, setTrivia] = useState(null);
-  const [current, setCurrent] = useState(0);
-  const [results, setResults] = useState([]);
+export interface Props {
+  navigation: any;
+}
+
+const Quiz: React.FC<Props> = ({ navigation }) => {
+  const [trivia, setTrivia] = useState<Array<object>>([]);
+
+  const { userAnswers, saveAnswer } = useCurrentAnswers();
 
   useEffect(() => {
-    fetch("https://opentdb.com/api.php?amount=10&difficulty=hard&type=boolean")
+    fetch(
+      "https://opentdb.com/api.php?amount=10&difficulty=hard&type=boolean"
+    )
       .then((response) => response.json())
       .then((json) => setTrivia(json.results))
       .catch((error) => {
@@ -16,44 +30,32 @@ const Quiz = ({ navigation }) => {
       });
   }, []);
 
-  const renderQuestion = (item, index) => {
+  const renderQuestion = (item: QuestionObject, index: number) => {
     return (
-      <View style={styles.container} key={item}>
-        <Text style={styles.title}>{item.category}</Text>
-
-        <Text style={styles.question}>{item.question}</Text>
-
-        <Text key={item} style={styles.indicator}>
-          {index + 1} of {trivia.length}
-        </Text>
-
-        <View style={styles.buttonContainer}>
-          <BooleanButton
-            option={false}
-            onPress={() => saveResult(item.question, item.correct_answer, "False")}
-          />
-          <BooleanButton
-            option={true}
-            onPress={() => saveResult(item.question, item.correct_answer, "True")}
-          />
-        </View>
-      </View>
+      <QuestionLayout
+        item={item}
+        index={index}
+        triviaLength={trivia.length}
+        saveAnswer={handleQuestionAnswer}
+      />
     );
   };
 
-  const saveResult = (question, correct, answer) => {
-    setResults((prevState) => {
-      const resultsArray = prevState;
-      resultsArray.push({ question, correct, answer });
+  const handleQuestionAnswer = (
+    question: string,
+    correct: string,
+    answer: string
+  ) => {
+    saveAnswer(question, correct, answer);
+    setTrivia(
+      trivia.filter(
+        (element: object) => question !== element.question
+      )
+    );
 
-      setTrivia(trivia.filter((element) => question !== element.question));
-
-      if (results.length >= 10) {
-        return navigation.navigate("Results", { results: resultsArray });
-      }
-
-      return resultsArray;
-    });
+    if (userAnswers.length >= 10) {
+      navigation.navigate("Results");
+    }
   };
 
   return (
@@ -61,8 +63,8 @@ const Quiz = ({ navigation }) => {
       <FlatList
         data={trivia}
         renderItem={({ item, index }) => renderQuestion(item, index)}
-        keyExtractor={(item) => item.question}
-        extraData={results}
+        keyExtractor={(item: QuestionObject) => item.question}
+        extraData={userAnswers}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         scrollEnabled={false}
@@ -105,4 +107,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
 });
+
 export default Quiz;
