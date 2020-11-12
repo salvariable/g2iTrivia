@@ -12,10 +12,11 @@ export default function App() {
   const Stack = createStackNavigator();
 
   return (
+    // Context provider: stores responded questions with user's input and correct answers
     <QuestionsProvider>
       <NavigationContainer>
         <Stack.Navigator
-          // Avoid enabling header and "back" gesture to prevent stack breaks
+          // Avoid enabling header and "go back" gesture to prevent stack / screen breaks
           headerMode={"none"}
           screenOptions={{
             gestureEnabled: false,

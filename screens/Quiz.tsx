@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
-  View,
   StyleSheet,
   Dimensions,
   SafeAreaView,
@@ -41,6 +40,7 @@ const Quiz: React.FC<Props> = ({ navigation }) => {
     );
   };
 
+  // Save user's answer with its question and correct answer, then discard element from trivia data
   const handleQuestionAnswer = (
     question: string,
     correct: string,

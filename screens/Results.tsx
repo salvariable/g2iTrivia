@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { CommonActions } from "@react-navigation/native";
 import { useCurrentAnswers } from "../api/ContextProvider";
-
 export interface Props {
   navigation: any;
 }
