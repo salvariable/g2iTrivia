@@ -1,5 +1,10 @@
 import React from "react";
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+} from "react-native";
 
 export interface Props {
   option: boolean;
@@ -9,7 +14,12 @@ export interface Props {
 const BooleanButton: React.FC<Props> = ({ option, onPress }) => {
   return (
     <TouchableOpacity onPress={onPress}>
-      <View style={[styles.button, { backgroundColor: option === true ? "green" : "red" }]}>
+      <View
+        style={[
+          styles.button,
+          { backgroundColor: option === true ? "green" : "red" },
+        ]}
+      >
         <Text>{option === true ? "TRUE" : "FALSE"}</Text>
       </View>
     </TouchableOpacity>
